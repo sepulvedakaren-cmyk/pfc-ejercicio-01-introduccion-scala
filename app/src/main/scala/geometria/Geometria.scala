@@ -22,7 +22,7 @@ class Geometria {
    * distancia(1, 1, 1, 1) == 0.0
    */
   def distancia(x1: Double, y1: Double, x2: Double, y2: Double): Double = {
-    ???
+    math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
   }
 
   /**
@@ -36,7 +36,9 @@ class Geometria {
   def perimetro(ax: Double, ay: Double,
                 bx: Double, by: Double,
                 cx: Double, cy: Double): Double = {
-    ???
+    distancia(ax, ay, bx, by) +
+      distancia (bx, by, cx, cy) +
+      distancia (cx, cy, ax, ay)
   }
 
   /**
@@ -57,7 +59,16 @@ class Geometria {
   def area(ax: Double, ay: Double,
            bx: Double, by: Double,
            cx: Double, cy: Double): Double = {
-    ???
+    val ab = distancia(ax, ay, bx, by)
+    val bc = distancia(bx,by, cx, cy)
+    val ca = distancia(cx, cy, ax, ay)
+
+    val s = (ab + bc + ca) / 2
+
+    require(s > 0 && (s - ab) > 0 && (s - bc) > 0 && (s - ca) > 0,
+      "Los puntos no forman un triangulo")
+
+    math.sqrt(s * (s - ab) * (s - bc) * (s - ca))
   }
 
   /**
@@ -77,6 +88,22 @@ class Geometria {
   def clasificar(ax: Double, ay: Double,
                  bx: Double, by: Double,
                  cx: Double, cy: Double): String = {
-    ???
+    val ab = distancia (ax, ay, bx, by)
+    val bc = distancia (bx, by, cx, cy)
+    val ca = distancia(cx, cy, ax, ay)
+
+    val tolerancia = 1e-9
+
+    val abIgualBc = math.abs(ab - bc) < tolerancia
+    val bcIgualCa = math.abs(bc - ca) < tolerancia
+    val abIgualCa = math.abs(ab - ca) < tolerancia
+
+    if (abIgualBc && bcIgualCa){
+      "equilatero"
+    }else if (abIgualBc || bcIgualCa || abIgualCa){
+      "isosceles"
+    } else {
+      "escaleno"
+    }
   }
 }
